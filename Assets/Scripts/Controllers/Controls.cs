@@ -16,6 +16,10 @@ namespace SA
         public bool TwoHand;
         public bool Lockon;
         public bool Roll;
+        public bool ChangeTarget;
+
+        public float MouseX;
+        public float MouseY;
     }
 }
 

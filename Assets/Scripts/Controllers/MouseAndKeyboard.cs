@@ -17,6 +17,10 @@ namespace SA
             cont.TwoHand = Input.GetButtonUp("TwoHand");
             cont.Lockon = Input.GetButtonUp("Lockon");
             cont.Roll = cont.Sprint;
+            cont.ChangeTarget = Input.GetButtonUp("ChangeTarget");
+
+            cont.MouseX = Input.GetAxis("Mouse X");
+            cont.MouseY = Input.GetAxis("Mouse Y");
 
             return cont;
         }

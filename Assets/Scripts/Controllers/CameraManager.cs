@@ -10,12 +10,14 @@ namespace SA
         public float controllerSpeed = 7;
 
         public Transform target;
-        public Transform lockonTarget;
+        public EnemyTarget lockonTarget;
+        public Transform lockonTransform;
 
         [HideInInspector]
         public Transform pivot;
         [HideInInspector]
         public Transform camTrans;
+        StateManager states;
 
         float turnSmoothing = .1f;
         public float minAngle = -35;
@@ -28,34 +30,51 @@ namespace SA
         public float lookAngle;
         public float tiltAngle;
 
-        public void Init(Transform t)
+        bool usedRightAxis;
+
+        public void Init(StateManager st)
         {
-            target = t;
+            states = st;
+            target = st.transform;
 
             camTrans = Camera.main.transform;
             pivot = camTrans.parent;
         }
 
 
-        public void Tick(float d)
+        public void Tick(float d, Controls cont)
         {
-            float h = Input.GetAxis("Mouse X");
-            float v = Input.GetAxis("Mouse Y");
-
-            float c_h = Input.GetAxis("RightAxis X");
-            float c_v = Input.GetAxis("RightAxis Y");
-
             float targetSpeed = mouseSpeed;
 
-            if (c_h != 0 || c_v != 0)
+            if (lockonTarget != null)
             {
-                h = c_h;
-                v = c_v;
-                targetSpeed = controllerSpeed;
+                if (lockonTransform == null)
+                {
+                    lockonTransform = lockonTarget.GetTarget();
+                    states.lockOnTransform = lockonTransform;
+                }
+
+                if (cont.ChangeTarget)
+                {
+                    if (!usedRightAxis)
+                    {
+                        lockonTransform = lockonTarget.GetTarget(cont.ChangeTarget);
+                        states.lockOnTransform = lockonTransform;
+                        usedRightAxis = true;
+                    }
+                }
+            }
+
+            if (usedRightAxis)
+            {
+                if (!cont.ChangeTarget)
+                {
+                    usedRightAxis = false;
+                }
             }
 
             FollowTarget(d);
-            HandleRotations(d, v, h, targetSpeed);
+            HandleRotations(d, cont.MouseY, cont.MouseX, targetSpeed);
         }
 
         void FollowTarget(float d)
@@ -81,13 +100,13 @@ namespace SA
             tiltAngle -= smoothY * targetSpeed;
             tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle);
             pivot.localRotation = Quaternion.Euler(tiltAngle, 0, 0);
-            
+
             if (lockon && lockonTarget != null)
             {
-                Vector3 targetDir = lockonTarget.position - transform.position;
+                Vector3 targetDir = lockonTransform.position - transform.position;
                 targetDir.Normalize();
 
-                if(targetDir == Vector3.zero)
+                if (targetDir == Vector3.zero)
                 {
                     targetDir = transform.forward;
                 }

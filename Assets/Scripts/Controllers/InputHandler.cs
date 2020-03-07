@@ -17,7 +17,7 @@ namespace SA
             states.Init();
 
             camManager = CameraManager.singleton;
-            camManager.Init(this.transform);
+            camManager.Init(states);
         }
 
         void FixedUpdate()
@@ -26,7 +26,7 @@ namespace SA
             GetInput();
             UpdateStates();
             states.FixedTick(Time.deltaTime);
-            camManager.Tick(delta);
+            camManager.Tick(delta, cont);
         }
 
         void Update()
@@ -73,7 +73,8 @@ namespace SA
                     states.lockOn = false;
                 }
 
-                camManager.lockonTarget = states.lockOnTarget.transform;
+                camManager.lockonTarget = states.lockOnTarget;
+                states.lockOnTransform = camManager.lockonTransform;
                 camManager.lockon = states.lockOn;
             }
         }
