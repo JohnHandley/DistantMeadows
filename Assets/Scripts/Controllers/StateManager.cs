@@ -1,26 +1,31 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace SA
 {
     public class StateManager : MonoBehaviour
     {
-        [Header("Init")]
+        [Header( "Init" )]
         public GameObject activeModel;
 
 
-        [Header("Inputs")]
+        [Header( "Inputs" )]
+        public float vertical;
+        public float horizontal;
         public float moveAmount;
         public Vector3 moveDir;
-        public Controls cont;
+        public bool rt, rb, lt, lb;
+        public bool rollInput;
 
-        [Header("Stats")]
+        [Header( "Stats" )]
         public float moveSpeed = 3.5f;
-        public float runSpeed = 5f;
-        public float rotateSpeed = 5.0f;
+        public float runSpeed = 5.5f;
+        public float rotateSpeed = 9.0f;
         public float toGround = 0.5f;
-        public float rollSpeed = 1.0f;
+        public float rollSpeed = 15.0f;
 
-        [Header("States")]
+        [Header( "States" )]
         public bool onGround;
         public bool run;
         public bool lockOn;
@@ -28,7 +33,8 @@ namespace SA
         public bool canMove;
         public bool isTwoHanded;
 
-        [Header("Other")]
+
+        [Header( "Other" )]
         public EnemyTarget lockOnTarget;
         public Transform lockOnTransform;
         public AnimationCurve roll_curve;
@@ -40,7 +46,6 @@ namespace SA
         [HideInInspector]
         public AnimatorHook a_hook;
 
-
         [HideInInspector]
         public float delta;
         [HideInInspector]
@@ -48,7 +53,7 @@ namespace SA
 
         float _actionDelay;
 
-        public void Init()
+        public void Init ( )
         {
             SetupAnimator();
             rigid = GetComponent<Rigidbody>();
@@ -57,22 +62,22 @@ namespace SA
             rigid.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
             a_hook = activeModel.AddComponent<AnimatorHook>();
-            a_hook.Init(this);
+            a_hook.Init( this );
 
             gameObject.layer = 8;
-            ignoreLayers = ~(1 << 9);
+            ignoreLayers = ~( 1 << 9 );
 
-            anim.SetBool("onGround", true);
+            anim.SetBool( "onGround", true );
         }
 
-        void SetupAnimator()
+        void SetupAnimator ( )
         {
-            if (activeModel == null)
+            if ( activeModel == null )
             {
                 anim = GetComponentInChildren<Animator>();
-                if (anim == null)
+                if ( anim == null )
                 {
-                    Debug.Log("No model found");
+                    Debug.Log( "No model found" );
                 }
                 else
                 {
@@ -80,25 +85,24 @@ namespace SA
                 }
             }
 
-            if (anim == null)
+            if ( anim == null )
                 anim = activeModel.GetComponent<Animator>();
 
             anim.applyRootMotion = false;
         }
 
-        public void FixedTick(float d)
+        public void FixedTick ( float d )
         {
             delta = d;
 
-
             DetectAction();
 
-            if (inAction)
+            if ( inAction )
             {
                 anim.applyRootMotion = true;
 
                 _actionDelay += delta;
-                if (_actionDelay > 0.3f)
+                if ( _actionDelay > 0.3f )
                 {
                     inAction = false;
                     _actionDelay = 0;
@@ -109,123 +113,114 @@ namespace SA
                 }
             }
 
-            canMove = anim.GetBool("canMove");
+            canMove = anim.GetBool( "canMove" );
 
-            if (!canMove)
+            if ( !canMove )
                 return;
 
+            // a_hook.rm_multi = 1;
             a_hook.CloseRoll();
             HandleRolls();
 
             anim.applyRootMotion = false;
-
-            rigid.drag = (moveAmount > 0 || onGround == false) ? 0 : 4;
+            rigid.drag = ( moveAmount > 0 || onGround == false ) ? 0 : 4;
 
             float targetSpeed = moveSpeed;
-            if (run)
+            if ( run )
                 targetSpeed = runSpeed;
 
-            if (onGround)
-                rigid.velocity = moveDir * (targetSpeed * moveAmount);
+            if ( onGround )
+                rigid.velocity = moveDir * ( targetSpeed * moveAmount );
 
-            if (run)
+            if ( run )
                 lockOn = false;
 
-            Vector3 targetDir = (lockOn == false) ?
+            Vector3 targetDir = ( lockOn == false ) ?
                 moveDir
                 :
-                (lockOnTransform != null) ?
+                ( lockOnTransform != null ) ?
                     lockOnTransform.transform.position - transform.position
                     :
                     moveDir;
 
             targetDir.y = 0;
-            if (targetDir == Vector3.zero)
+            if ( targetDir == Vector3.zero )
                 targetDir = transform.forward;
-            Quaternion tr = Quaternion.LookRotation(targetDir);
-            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, delta * moveAmount * rotateSpeed);
+            Quaternion tr = Quaternion.LookRotation( targetDir );
+            Quaternion targetRotation = Quaternion.Slerp( transform.rotation, tr, delta * moveAmount * rotateSpeed );
             transform.rotation = targetRotation;
 
-            anim.SetBool("lockon", lockOn);
+            anim.SetBool( "lockon", lockOn );
 
-            if(lockOn)
-            {
-                HandleLockOnAnimations(moveDir);
-            }
-            else
-            {
+            if ( lockOn == false )
                 HandleMovementAnimations();
-            }
+            else
+                HandleLockOnAnimations( moveDir );
         }
 
-        public void DetectAction()
+        public void DetectAction ( )
         {
-            if (canMove == false)
+            if ( canMove == false )
                 return;
 
-            if (!cont.LeftHandAction && !cont.LeftHandHeavyAction && !cont.RightHandAction && !cont.RightHandHeavyAction)
+            if ( rb == false && rt == false && lt == false && lb == false )
                 return;
 
             string targetAnim = null;
 
-            if (cont.RightHandAction)
+            if ( rb )
                 targetAnim = "oh_attack_1";
-            if (cont.RightHandHeavyAction)
+            if ( rt )
                 targetAnim = "oh_attack_2";
-            if (cont.LeftHandAction)
+            if ( lt )
                 targetAnim = "oh_attack_3";
-            if (cont.LeftHandHeavyAction)
+            if ( lb )
                 targetAnim = "th_attack_1";
 
-            if (string.IsNullOrEmpty(targetAnim))
+            if ( string.IsNullOrEmpty( targetAnim ) )
                 return;
 
             canMove = false;
             inAction = true;
-            anim.CrossFade(targetAnim, 0.2f);
+            anim.CrossFade( targetAnim, 0.2f );
             //rigid.velocity = Vector3.zero;
         }
 
-        public void Tick(float d)
+        public void Tick ( float d )
         {
             delta = d;
             onGround = OnGround();
-            anim.SetBool("onGround", onGround);
+            anim.SetBool( "onGround", onGround );
         }
 
-        void HandleRolls()
+        void HandleRolls ( )
         {
-            if(!cont.Roll)
-            {
+            if ( !rollInput )
                 return;
-            }
 
-            float v = (moveAmount > 0.3f) ? 1 : 0;  // cont.Vertical;
-            float h = 0; // cont.Horizontal;
+            float v = vertical;
+            float h = horizontal;
+            v = ( moveAmount > 0.3f ) ? 1 : 0;
+            h = 0;
 
-            //if (!lockOn)
-            //{
-            //    v = (moveAmount > 0.3f) ? 1 : 0;
-            //    h = 0;
-            //}
-            //else
-            //{
-            //    if(Mathf.Abs(v) < 0.3f)
-            //    {
-            //        v = 0;
-            //    }
+            /*     if(lockOn == false)
+                 {
+                     v = (moveAmount > 0.3f)? 1 : 0;
+                     h = 0;
+                 }
+                 else
+                 {
+                     if (Mathf.Abs(v) < 0.3f)
+                         v = 0;
+                     if (Mathf.Abs(h) < 0.3f)
+                         h = 0;
+                 }*/
 
-            //    if(Mathf.Abs(h) < 0.3f)
-            //    {
-            //        h = 0;
-            //    }
-            //}
-
-            if (v != 0)
+            if ( v != 0 )
             {
-                if (moveDir == Vector3.zero)
+                if ( moveDir == Vector3.zero )
                     moveDir = transform.forward;
-                Quaternion targetRot = Quaternion.LookRotation(moveDir);
+                Quaternion targetRot = Quaternion.LookRotation( moveDir );
                 transform.rotation = targetRot;
                 a_hook.InitForRoll();
                 a_hook.rm_multi = rollSpeed;
@@ -235,40 +230,43 @@ namespace SA
                 a_hook.rm_multi = 1.3f;
             }
 
-            anim.SetFloat("vertical", v);
-            anim.SetFloat("horizontal", h);
+
+            anim.SetFloat( "vertical", v );
+            anim.SetFloat( "horizontal", h );
 
             canMove = false;
             inAction = true;
-            anim.CrossFade("Rolls", 0.2f);
+            anim.CrossFade( "Rolls", 0.2f );
+
         }
 
-        void HandleMovementAnimations()
+        void HandleMovementAnimations ( )
         {
-            anim.SetBool("run", run);
-            anim.SetFloat("vertical", moveAmount, 0.4f, delta);
+            anim.SetBool( "run", run );
+            anim.SetFloat( "vertical", moveAmount, 0.4f, delta );
         }
 
-        void HandleLockOnAnimations(Vector3 moveDir)
+        void HandleLockOnAnimations ( Vector3 moveDir )
         {
-            Vector3 relatvieDir = transform.InverseTransformDirection(moveDir);
-            float h = relatvieDir.x;
-            float v = relatvieDir.z;
+            Vector3 relativeDir = transform.InverseTransformDirection( moveDir );
+            float h = relativeDir.x;
+            float v = relativeDir.z;
 
-            anim.SetFloat("vertical", v, 0.2f, delta);
-            anim.SetFloat("horizontal", h, 0.2f, delta);
+            anim.SetFloat( "vertical", v, 0.2f, delta );
+            anim.SetFloat( "horizontal", h, 0.2f, delta );
+
         }
 
-        public bool OnGround()
+        public bool OnGround ( )
         {
             bool r = false;
 
-            Vector3 origin = transform.position + (Vector3.up * toGround);
+            Vector3 origin = transform.position + ( Vector3.up * toGround );
             Vector3 dir = -Vector3.up;
             float dis = toGround + 0.3f;
             RaycastHit hit;
-            Debug.DrawRay(origin, dir * dis);
-            if (Physics.Raycast(origin, dir, out hit, dis, ignoreLayers))
+            Debug.DrawRay( origin, dir * dis );
+            if ( Physics.Raycast( origin, dir, out hit, dis, ignoreLayers ) )
             {
                 r = true;
                 Vector3 targetPosition = hit.point;
@@ -278,9 +276,9 @@ namespace SA
             return r;
         }
 
-        public void HandleTwoHanded()
+        public void HandleTwoHanded ( )
         {
-            anim.SetBool("two_handed", isTwoHanded);
+            anim.SetBool( "two_handed", isTwoHanded );
         }
     }
 }
