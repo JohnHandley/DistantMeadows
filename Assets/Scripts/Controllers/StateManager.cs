@@ -17,6 +17,7 @@ namespace SA
         public Vector3 moveDir;
         public bool rt, rb, lt, lb;
         public bool rollInput;
+        public bool itemInput;
 
         [Header( "Stats" )]
         public float moveSpeed = 3.5f;
@@ -32,6 +33,7 @@ namespace SA
         public bool inAction;
         public bool canMove;
         public bool isTwoHanded;
+        public bool usingItem;
 
 
         [Header( "Other" )]
@@ -45,6 +47,10 @@ namespace SA
         public Rigidbody rigid;
         [HideInInspector]
         public AnimatorHook a_hook;
+        [HideInInspector]
+        public ActionManager actionManager;
+        [HideInInspector]
+        public InventoryManager inventoryManager;
 
         [HideInInspector]
         public float delta;
@@ -60,6 +66,12 @@ namespace SA
             rigid.angularDrag = 999;
             rigid.drag = 4;
             rigid.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+            inventoryManager = GetComponent<InventoryManager>();
+            inventoryManager.Init();
+
+            actionManager = GetComponent<ActionManager>();
+            actionManager.Init( this );
 
             a_hook = activeModel.AddComponent<AnimatorHook>();
             a_hook.Init( this );
@@ -95,7 +107,11 @@ namespace SA
         {
             delta = d;
 
-            DetectAction();
+            usingItem = anim.GetBool( "interacting" );
+            DetectItemAction();
+            DetectAttackAction();
+
+            inventoryManager.curWeapon.weaponModel.SetActive( !usingItem );
 
             if ( inAction )
             {
@@ -114,26 +130,29 @@ namespace SA
             }
 
             canMove = anim.GetBool( "canMove" );
-
             if ( !canMove )
                 return;
 
-            // a_hook.rm_multi = 1;
-            a_hook.CloseRoll();
-            HandleRolls();
+            DetectRollAction();
 
             anim.applyRootMotion = false;
             rigid.drag = ( moveAmount > 0 || onGround == false ) ? 0 : 4;
 
             float targetSpeed = moveSpeed;
+            if ( usingItem )
+            {
+                run = false;
+                moveAmount = Mathf.Clamp( moveAmount, 0, 0.45f );
+            }
+
             if ( run )
+            {
                 targetSpeed = runSpeed;
+                lockOn = false;
+            }
 
             if ( onGround )
                 rigid.velocity = moveDir * ( targetSpeed * moveAmount );
-
-            if ( run )
-                lockOn = false;
 
             Vector3 targetDir = ( lockOn == false ) ?
                 moveDir
@@ -158,24 +177,38 @@ namespace SA
                 HandleLockOnAnimations( moveDir );
         }
 
-        public void DetectAction ( )
+        public void DetectItemAction ( )
         {
-            if ( canMove == false )
+            if ( !canMove || usingItem )
+                return;
+
+            if ( !itemInput )
+                return;
+
+            ItemAction slot = actionManager.consumableItem;
+            string targetAnim = slot.targetAnim;
+
+            if ( string.IsNullOrEmpty( targetAnim ) )
+                return;
+
+            usingItem = true;
+            anim.Play( targetAnim );
+        }
+
+        public void DetectAttackAction ( )
+        {
+            if ( canMove == false || usingItem )
                 return;
 
             if ( rb == false && rt == false && lt == false && lb == false )
                 return;
 
-            string targetAnim = null;
-
-            if ( rb )
-                targetAnim = "oh_attack_1";
-            if ( rt )
-                targetAnim = "oh_attack_2";
-            if ( lt )
-                targetAnim = "oh_attack_3";
-            if ( lb )
-                targetAnim = "th_attack_1";
+            Action slot = actionManager.GetActionSlot();
+            if ( slot == null )
+            {
+                return;
+            }
+            string targetAnim = slot.targetAnim;
 
             if ( string.IsNullOrEmpty( targetAnim ) )
                 return;
@@ -183,7 +216,6 @@ namespace SA
             canMove = false;
             inAction = true;
             anim.CrossFade( targetAnim, 0.2f );
-            //rigid.velocity = Vector3.zero;
         }
 
         public void Tick ( float d )
@@ -193,28 +225,16 @@ namespace SA
             anim.SetBool( "onGround", onGround );
         }
 
-        void HandleRolls ( )
+        void DetectRollAction ( )
         {
-            if ( !rollInput )
+            a_hook.CloseRoll();
+            if ( !rollInput || usingItem )
                 return;
 
             float v = vertical;
             float h = horizontal;
             v = ( moveAmount > 0.3f ) ? 1 : 0;
             h = 0;
-
-            /*     if(lockOn == false)
-                 {
-                     v = (moveAmount > 0.3f)? 1 : 0;
-                     h = 0;
-                 }
-                 else
-                 {
-                     if (Mathf.Abs(v) < 0.3f)
-                         v = 0;
-                     if (Mathf.Abs(h) < 0.3f)
-                         h = 0;
-                 }*/
 
             if ( v != 0 )
             {
@@ -279,6 +299,8 @@ namespace SA
         public void HandleTwoHanded ( )
         {
             anim.SetBool( "two_handed", isTwoHanded );
+
+            actionManager.UpdateActionsWithCurrentWeapon( isTwoHanded );
         }
     }
 }

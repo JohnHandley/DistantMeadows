@@ -23,6 +23,10 @@ namespace SA
         bool leftAxis_down;
         bool rightAxis_down;
 
+        float b_timer;
+        float lt_timer;
+        float rt_timer;
+
         StateManager states;
         CameraManager camManager;
 
@@ -48,8 +52,10 @@ namespace SA
 
         void Update ( )
         {
+            RunImmediateChecks();
             delta = Time.deltaTime;
             states.Tick( delta );
+            ResetInputAndStates();
         }
 
         void GetInput ( )
@@ -58,7 +64,7 @@ namespace SA
             horizontal = Input.GetAxis( "Horizontal" );
             b_input = Input.GetButton( "B" );
             a_input = Input.GetButton( "A" );
-            y_input = Input.GetButtonUp( "Y" );
+
             x_input = Input.GetButton( "X" );
             rt_input = Input.GetButton( "RT" );
             rt_axis = Input.GetAxis( "RT" );
@@ -72,8 +78,10 @@ namespace SA
             rb_input = Input.GetButton( "RB" );
             lb_input = Input.GetButton( "LB" );
 
-            leftAxis_down = Input.GetButtonUp( "L" );
-            rightAxis_down = Input.GetButtonUp( "R" );
+            if ( b_input )
+            {
+                b_timer += delta;
+            }
         }
 
         void UpdateStates ( )
@@ -87,22 +95,31 @@ namespace SA
             float m = Mathf.Abs( horizontal ) + Mathf.Abs( vertical );
             states.moveAmount = Mathf.Clamp01( m );
 
-            states.rollInput = b_input;
+            if ( x_input )
+                b_input = false;
 
-            if ( b_input )
+            if ( b_input && b_timer > 0.5f )
             {
-                //  states.run = (states.moveAmount > 0);
-            }
-            else
-            {
-                //states.run = false;
+                states.run = ( states.moveAmount > 0 );
             }
 
+            if ( !b_input && b_timer > 0 && b_timer < 0.5f )
+            {
+                states.rollInput = true;
+            }
+
+            states.itemInput = x_input;
             states.rt = rt_input;
             states.lt = lt_input;
             states.rb = rb_input;
             states.lb = lb_input;
+        }
 
+        void RunImmediateChecks ( )
+        {
+            leftAxis_down = Input.GetButtonUp( "L" );
+            rightAxis_down = Input.GetButtonUp( "R" );
+            y_input = Input.GetButtonUp( "Y" );
             if ( y_input )
             {
                 states.isTwoHanded = !states.isTwoHanded;
@@ -122,6 +139,22 @@ namespace SA
             }
         }
 
+        void ResetInputAndStates ( )
+        {
+            if ( b_input == false )
+            {
+                b_timer = 0;
+            }
 
+            if ( states.rollInput )
+            {
+                states.rollInput = false;
+            }
+
+            if ( states.run )
+            {
+                states.run = false;
+            }
+        }
     }
 }

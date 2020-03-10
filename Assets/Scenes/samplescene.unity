@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2035111234}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 131.16855, g: 162.52502, b: 215.10977, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -236,6 +236,12 @@ Transform:
   m_Father: {fileID: 1493780234}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &65505775 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 7b2cf600f0ec744e3952662710d033dc,
+    type: 3}
+  m_PrefabInstance: {fileID: 1469722651}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &144462474
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -426,7 +432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Profile: {fileID: 11400000, guid: a123fc0ac58cb774e8592c925f167e7c, type: 2}
   m_StaticLightingSkyUniqueID: 1
-  m_SkySettings: {fileID: 1885346763}
+  m_SkySettings: {fileID: 423711009}
   m_SkySettingsFromProfile: {fileID: -1658960478407648048, guid: a123fc0ac58cb774e8592c925f167e7c,
     type: 2}
 --- !u!4 &313761475
@@ -443,6 +449,107 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &423711009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 0
+  exposure:
+    m_OverrideState: 0
+    m_Value: 10
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxColor:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: 54a3a0570aebe8949bec4966f1376581, type: 3}
+  enableBackplate:
+    m_OverrideState: 0
+    m_Value: 0
+  backplateType:
+    m_OverrideState: 0
+    m_Value: 0
+  groundLevel:
+    m_OverrideState: 0
+    m_Value: 0
+  scale:
+    m_OverrideState: 0
+    m_Value: {x: 32, y: 32}
+  projectionDistance:
+    m_OverrideState: 0
+    m_Value: 16
+    min: 0.0000001
+  plateRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexOffset:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0}
+  blendAmount:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 100
+  shadowTint:
+    m_OverrideState: 0
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    hdr: 0
+    showAlpha: 1
+    showEyeDropper: 1
+  pointLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  dirLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  rectLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
 --- !u!1 &491389214
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,12 +737,6 @@ PrefabInstance:
 --- !u!1 &867550201 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 85c5b3f42ab1340b6a38b7b44673e506,
-    type: 3}
-  m_PrefabInstance: {fileID: 811229514}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &867550203 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 85c5b3f42ab1340b6a38b7b44673e506,
     type: 3}
   m_PrefabInstance: {fileID: 811229514}
   m_PrefabAsset: {fileID: 0}
@@ -869,6 +970,8 @@ GameObject:
   - component: {fileID: 1404551787}
   - component: {fileID: 1404551786}
   - component: {fileID: 1404551790}
+  - component: {fileID: 1404551791}
+  - component: {fileID: 1404551792}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -946,27 +1049,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeModel: {fileID: 0}
+  vertical: 0
+  horizontal: 0
   moveAmount: 0
   moveDir: {x: 0, y: 0, z: 0}
+  rt: 0
+  rb: 0
+  lt: 0
+  lb: 0
+  rollInput: 0
+  itemInput: 0
   moveSpeed: 3.5
-  runSpeed: 5
+  runSpeed: 5.5
   rotateSpeed: 9
   toGround: 0.5
-  rollSpeed: 1
+  rollSpeed: 8
   onGround: 0
   run: 0
   lockOn: 0
   inAction: 0
   canMove: 0
   isTwoHanded: 0
+  usingItem: 0
   lockOnTarget: {fileID: 867550204}
-  lockOnTransform: {fileID: 867550203}
+  lockOnTransform: {fileID: 0}
   roll_curve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.0029411316
-      value: 0.0021095276
+      time: -0.00074005127
+      value: 0.0014648438
       inSlope: 0
       outSlope: 0
       tangentMode: 136
@@ -974,23 +1086,32 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.09612179
-      value: 0.9999409
-      inSlope: -0.0007923759
-      outSlope: -0.0007923759
+      time: 0.0304057
+      value: 0.72299314
+      inSlope: 2.946406
+      outSlope: 2.946406
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.032299876
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.49730587
+      value: 0.9969692
+      inSlope: -0.051086668
+      outSlope: -0.051086668
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.14404647
       outWeight: 0.06572888
     - serializedVersion: 3
-      time: 0.81306434
-      value: 1.002985
-      inSlope: -0.13213325
-      outSlope: -0.13213325
+      time: 0.970386
+      value: 0.70338887
+      inSlope: -2.962622
+      outSlope: -2.962622
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.07855868
-      outWeight: 0.126662
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 0.9963041
       value: 0.005738914
@@ -1006,10 +1127,64 @@ MonoBehaviour:
   anim: {fileID: 0}
   rigid: {fileID: 0}
   a_hook: {fileID: 0}
+  actionManager: {fileID: 0}
+  inventoryManager: {fileID: 0}
   delta: 0
   ignoreLayers:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &1404551791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404551785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ec62e848792f14d9af6500a32c87aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionSlots:
+  - input: 0
+    targetAnim: 
+  - input: 1
+    targetAnim: 
+  - input: 2
+    targetAnim: 
+  - input: 3
+    targetAnim: 
+  consumableItem:
+    input: 0
+    targetAnim: bestus
+    item_id: 
+  states: {fileID: 0}
+--- !u!114 &1404551792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404551785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a56e6f4d3d2114b92c2d49806712ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  curWeapon:
+    oh_actions:
+    - input: 0
+      targetAnim: oh_attack_1
+    - input: 2
+      targetAnim: oh_attack_3
+    - input: 3
+      targetAnim: parry
+    th_actions:
+    - input: 2
+      targetAnim: th_attack_1
+    - input: 0
+      targetAnim: th_attack_2
+    weaponModel: {fileID: 65505775}
 --- !u!1 &1439282704
 GameObject:
   m_ObjectHideFlags: 0
@@ -1667,107 +1842,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b2cf600f0ec744e3952662710d033dc, type: 3}
---- !u!114 &1885346763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 0
-  exposure:
-    m_OverrideState: 0
-    m_Value: 10
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxColor:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0, z: 0}
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 20000
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: 54a3a0570aebe8949bec4966f1376581, type: 3}
-  enableBackplate:
-    m_OverrideState: 0
-    m_Value: 0
-  backplateType:
-    m_OverrideState: 0
-    m_Value: 0
-  groundLevel:
-    m_OverrideState: 0
-    m_Value: 0
-  scale:
-    m_OverrideState: 0
-    m_Value: {x: 32, y: 32}
-  projectionDistance:
-    m_OverrideState: 0
-    m_Value: 16
-    min: 0.0000001
-  plateRotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  plateTexRotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  plateTexOffset:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0}
-  blendAmount:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 100
-  shadowTint:
-    m_OverrideState: 0
-    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    hdr: 0
-    showAlpha: 1
-    showEyeDropper: 1
-  pointLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
-  dirLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
-  rectLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
 --- !u!1 &1920255463
 GameObject:
   m_ObjectHideFlags: 0
