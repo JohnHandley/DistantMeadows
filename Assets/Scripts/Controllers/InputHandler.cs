@@ -86,6 +86,11 @@ namespace SA
 
         void UpdateStates ( )
         {
+            if ( camManager == null )
+            {
+                throw new System.Exception( "Camera Manager on Input Handler Null" );
+            }
+
             states.horizontal = horizontal;
             states.vertical = vertical;
 
@@ -125,6 +130,19 @@ namespace SA
                 states.isTwoHanded = !states.isTwoHanded;
                 states.HandleTwoHanded();
             }
+
+            if ( states.lockOnTarget != null )
+            {
+                if ( states.lockOnTarget.eStates.isDead )
+                {
+                    states.lockOn = false;
+                    states.lockOnTarget = null;
+                    states.lockOnTransform = null;
+                    camManager.lockon = false;
+                    camManager.lockonTarget = null;
+                }
+            }
+
 
             if ( rightAxis_down )
             {

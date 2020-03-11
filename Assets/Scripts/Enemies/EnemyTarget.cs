@@ -10,42 +10,46 @@ namespace SA
         public List<Transform> targets = new List<Transform>();
         public List<HumanBodyBones> h_bones = new List<HumanBodyBones>();
 
+        public EnemyStates eStates;
+
         Animator anim;
 
-        void Start()
+        public void Init ( EnemyStates eSt )
         {
-            anim = GetComponent<Animator>();
-            if (anim.isHuman == false)
+            eStates = eSt;
+
+            anim = eSt.anim;
+            if ( anim.isHuman == false )
                 return;
 
-            for (int i = 0; i < h_bones.Count; i++)
+            for ( int i = 0; i < h_bones.Count; i++ )
             {
-                targets.Add(anim.GetBoneTransform(h_bones[i]));
+                targets.Add( anim.GetBoneTransform( h_bones[ i ] ) );
             }
         }
 
-        public Transform GetTarget(bool negative = false)
+        public Transform GetTarget ( bool negative = false )
         {
-            if (targets.Count == 0)
+            if ( targets.Count == 0 )
                 return transform;
 
-            if (negative == false)
+            if ( negative == false )
             {
-                if (index < targets.Count - 1)
+                if ( index < targets.Count - 1 )
                     index++;
                 else
                     index = 0;
             }
             else
             {
-                if (index <= 0)
+                if ( index <= 0 )
                     index = targets.Count - 1;
                 else
                     index--;
             }
 
-            index = Mathf.Clamp(index, 0, targets.Count);
-            return targets[index];
+            index = Mathf.Clamp( index, 0, targets.Count );
+            return targets[ index ];
         }
 
     }

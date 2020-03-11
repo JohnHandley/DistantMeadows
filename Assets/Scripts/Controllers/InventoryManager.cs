@@ -10,7 +10,8 @@ namespace SA
 
         public void Init ( )
         {
-
+            Debug.Log( "Closing Damage Collider on " + curWeapon.weaponHook.name );
+            curWeapon.weaponHook.CloseDamageColliders();
         }
     }
 
@@ -20,6 +21,7 @@ namespace SA
         public List<Action> oh_actions;
         public List<Action> th_actions;
         public GameObject weaponModel;
+        public WeaponHook weaponHook;
     }
 }
 
