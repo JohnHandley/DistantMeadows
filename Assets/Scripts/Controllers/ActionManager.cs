@@ -31,7 +31,14 @@ namespace SA
         public void UpdateActionsWithCurrentWeapon ( bool twoHanded )
         {
             EmptyAllSlots();
-            Weapon w = states.inventoryManager.curWeapon;
+
+            if ( states.inventoryManager.HasWeaponInLeftHand() )
+            {
+                UpdateActionsWithLeftHand();
+                return;
+            }
+
+            Weapon w = states.inventoryManager.rightHandWeapon;
 
             List<Action> weaponActions = twoHanded ? w.th_actions : w.oh_actions;
 
@@ -39,6 +46,28 @@ namespace SA
             {
                 Action a = GetAction( weaponActions[ i ].input );
                 a.targetAnim = weaponActions[ i ].targetAnim;
+            }
+        }
+
+        public void UpdateActionsWithLeftHand ( )
+        {
+            Weapon r_w = states.inventoryManager.rightHandWeapon;
+            Weapon l_w = states.inventoryManager.leftHandWeapon;
+
+            Action rb = GetAction( ActionInput.rb );
+            Action rt = GetAction( ActionInput.rt );
+            rb.targetAnim = r_w.GetAction( ActionInput.rb, false ).targetAnim;
+            rt.targetAnim = r_w.GetAction( ActionInput.rt, false ).targetAnim;
+
+            Action lb = GetAction( ActionInput.lb );
+            Action lt = GetAction( ActionInput.lt );
+            lb.targetAnim = l_w.GetAction( ActionInput.rb, false ).targetAnim;
+            lt.targetAnim = l_w.GetAction( ActionInput.rt, false ).targetAnim;
+
+            if ( l_w.LeftHandMirror )
+            {
+                lb.mirror = true;
+                lt.mirror = true;
             }
         }
 
@@ -89,6 +118,7 @@ namespace SA
             {
                 Action a = GetAction( (ActionInput) i );
                 a.targetAnim = null;
+                a.mirror = false;
             }
         }
     }
@@ -107,8 +137,8 @@ namespace SA
     public class Action
     {
         public ActionInput input;
-
         public string targetAnim;
+        public bool mirror = false;
     }
 
     [System.Serializable]
