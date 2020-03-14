@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using Items.Application;
+using Player.Domain;
 using UnityEngine;
 
-namespace Player.Domain
+namespace Items.Domain
 {
     [System.Serializable]
     public class Weapon
     {
+        public string weaponId;
+        public Sprite icon;
         public string oh_idle;
         public string th_idle;
 

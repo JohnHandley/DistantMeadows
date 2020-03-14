@@ -183,6 +183,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -8.622986
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: fd92c2317ccd0427fab33f471f1a668b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4a32f8cd0589622468eafe6c3822cd6d, type: 2}
     - target: {fileID: -927199367670048503, guid: fd92c2317ccd0427fab33f471f1a668b,
         type: 3}
       propertyPath: m_Name
@@ -453,7 +458,7 @@ MonoBehaviour:
   create: 0
   ren: {fileID: 8400000, guid: a02dc572aebce8d478692bc832f41c52, type: 2}
   bakeCam: {fileID: 1832398366}
-  spriteName: shield
+  spriteName: shield2
 --- !u!4 &659970469 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 7b2cf600f0ec744e3952662710d033dc,
@@ -783,7 +788,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: a9ba15cc9b8f85d47b858b543052d8f0, type: 2}
+      objectReference: {fileID: 2100000, guid: 4a32f8cd0589622468eafe6c3822cd6d, type: 2}
     - target: {fileID: -927199367670048503, guid: 7b2cf600f0ec744e3952662710d033dc,
         type: 3}
       propertyPath: m_Name
@@ -892,7 +897,7 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
-  clearColorMode: 1
+  clearColorMode: 2
   backgroundColorHDR: {r: 0.7735849, g: 0.72614807, b: 0.72614807, a: 0}
   clearDepth: 1
   volumeLayerMask:
@@ -968,7 +973,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: a02dc572aebce8d478692bc832f41c52, type: 2}
   m_TargetDisplay: 0

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Player.Domain;
+using Items.Domain;
 
 namespace Player.Application
 {

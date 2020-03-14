@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UI.Application;
+using UnityEngine;
 
 namespace Player.Application
 {
@@ -32,6 +33,8 @@ namespace Player.Application
 
         void Start ( )
         {
+            QuickSlotManager.singleton.Init();
+
             states = GetComponent<StateManager>();
             states.Init();
 

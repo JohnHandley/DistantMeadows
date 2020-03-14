@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
-using Player.Domain;
 using Items.Application;
+using Items.Domain;
+using UI.Domain;
+using UI.Application;
 
 namespace Player.Application
 {
@@ -30,6 +32,12 @@ namespace Player.Application
             {
                 return;
             }
+
+            QuickSlotManager uiSlotManager = QuickSlotManager.singleton;
+            uiSlotManager.UpdateSlot(
+                ( isLeftHand ) ? QuickSlotType.LeftHand : QuickSlotType.RightHand,
+                weapon.icon
+            );
 
             string targetIdle = weapon.oh_idle;
             targetIdle += isLeftHand ? "_l" : "_r";
