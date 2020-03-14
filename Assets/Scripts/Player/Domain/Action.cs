@@ -27,6 +27,7 @@
         public bool mirror = false;
         public bool canBeParried = true;
         public bool changeSpeed = false;
+        public bool canBackStab = false;
         public float animSpeed = 1;
     }
 

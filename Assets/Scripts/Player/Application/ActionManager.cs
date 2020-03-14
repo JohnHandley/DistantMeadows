@@ -48,7 +48,7 @@ namespace Player.Application
             }
         }
 
-        public void UpdateActionsDuelWielding ( )
+        private void UpdateActionsDuelWielding ( )
         {
             InventoryManager playerInventory = states.inventoryManager;
             Weapon currentRightWeapon = playerInventory.rightHandWeapon;
@@ -78,7 +78,7 @@ namespace Player.Application
             return GetActionForInput( a_input );
         }
 
-        public Action GetActionForInput ( ActionInput input )
+        private Action GetActionForInput ( ActionInput input )
         {
             for ( int i = 0; i < actionSlots.Count; i++ )
             {
@@ -91,7 +91,7 @@ namespace Player.Application
             return null;
         }
 
-        public void SetActionForInput ( ActionInput input, Action action )
+        private void SetActionForInput ( ActionInput input, Action action )
         {
             for ( int i = 0; i < actionSlots.Count; i++ )
             {
@@ -103,11 +103,12 @@ namespace Player.Application
                     actionSlots[ i ].canBeParried = action.canBeParried;
                     actionSlots[ i ].animSpeed = action.animSpeed;
                     actionSlots[ i ].changeSpeed = action.changeSpeed;
+                    actionSlots[ i ].canBackStab = action.canBackStab;
                 }
             }
         }
 
-        public ActionInput GetActionInput ( )
+        private ActionInput GetActionInput ( )
         {
             if ( states.rb )
             {
@@ -129,7 +130,7 @@ namespace Player.Application
             return ActionInput.rb;
         }
 
-        void EmptyAllSlots ( )
+        private void EmptyAllSlots ( )
         {
             for ( int i = 0; i < 4; i++ )
             {
@@ -139,6 +140,7 @@ namespace Player.Application
                 action.type = ActionType.attack;
                 action.animSpeed = 1.0f;
                 action.changeSpeed = false;
+                action.canBackStab = false;
                 SetActionForInput( (ActionInput) i, action );
             }
         }

@@ -47,7 +47,6 @@ namespace Player.Application
         public EnemyTarget lockOnTarget;
         public Transform lockOnTransform;
         public AnimationCurve roll_curve;
-        public EnemyStates parryTarget;
 
         [HideInInspector]
         public Animator anim;
@@ -176,32 +175,34 @@ namespace Player.Application
 
         private bool CheckForParry ( )
         {
+            Vector3 parryTargetPosition;
+            Vector3 parryTargetDirection;
+            EnemyStates parryTarget = GetEnemyInfront(
+                out parryTargetPosition,
+                out parryTargetDirection,
+                3.0f
+            );
             if ( parryTarget == null )
             {
+                Debug.Log( "CheckForParry: Couldn't find the parry target" );
                 return false;
             }
 
-            Vector3 parryTargetPosition = parryTarget.transform.position;
-            Vector3 currentPosition = transform.position;
-
-            float distanceToParryTarget = Vector3.Distance( parryTargetPosition, currentPosition );
-            if ( distanceToParryTarget > 3.0f )
+            if ( !parryTarget.canBeParried || !parryTarget.parryIsOn )
             {
+                Debug.Log( "CheckForParry: Target is not able to be parried currently" );
                 return false;
             }
 
-            Vector3 parryTargetDirection = parryTargetPosition - currentPosition;
-            parryTargetDirection.Normalize();
-            parryTargetDirection.y = 0; // Make sure we aren't messing up the look rotation
-            float angleOfParryTarget = Vector3.Angle( transform.forward, parryTargetDirection );
-            bool parryTargetIsInFront = angleOfParryTarget < 60.0f;
-            if ( !parryTargetIsInFront )
+            // Make sure you are behind the target
+            float absAngle;
+            if ( BehindTarget( parryTarget, out absAngle ) || absAngle < 165 )
             {
+                Debug.Log( "CheckForParry: Not in front of target" );
                 return false;
             }
 
             Vector3 targetPosition = ( -parryTargetDirection * parryOffset ) + parryTargetPosition;
-
             transform.position = targetPosition; // Move to target position
 
             if ( parryTargetDirection == Vector3.zero )
@@ -220,20 +221,123 @@ namespace Player.Application
             // Make the parry target run their parry operations
             parryTarget.IsGettingParried();
 
-            canMove = false;
-            inAction = true;
-            anim.CrossFade( "parry_attack", 0.2f );
+            Debug.Log( "Parry Attacking Target" );
+
+            RunActionAnimation( "parry_attack" );
             return true;
+        }
+
+        private bool CheckForBackStab ( Action action )
+        {
+            if ( !action.canBackStab )
+            {
+                Debug.Log( "CheckForBackStab: Action is not able to initiate backstab" );
+                return false;
+            }
+
+            Vector3 backStabTargetPosition;
+            Vector3 backStabTargetDirection;
+            EnemyStates backStabTarget = GetEnemyInfront(
+                out backStabTargetPosition,
+                out backStabTargetDirection
+            );
+            if ( backStabTarget == null )
+            {
+                Debug.Log( "CheckForBackStab: Couldn't find the backstab target" );
+                return false;
+            }
+
+            // Make sure you are behind the target
+            float absAngle;
+            if ( !BehindTarget( backStabTarget, out absAngle ) || absAngle > 15 )
+            {
+                Debug.Log( "CheckForBackStab: Not behind the target" );
+                return false;
+            }
+
+            Vector3 targetPosition = ( -backStabTargetDirection * parryOffset ) + backStabTargetPosition;
+            transform.position = targetPosition; // Move to target position
+
+            if ( backStabTargetDirection == Vector3.zero )
+            {
+                backStabTargetDirection = backStabTarget.transform.forward;
+            }
+
+            // Make the backstab target look away from the player
+            Quaternion parryTargetRotation = Quaternion.LookRotation( backStabTargetDirection );
+            backStabTarget.transform.rotation = parryTargetRotation;
+
+            // Make the player look at the backstab target
+            Quaternion personalRotation = Quaternion.LookRotation( backStabTargetDirection );
+            transform.rotation = personalRotation;
+
+            Debug.Log( "Backstabbing Target" );
+
+            // Make the parry target run their parry operations
+            backStabTarget.IsGettingParried();
+
+            RunActionAnimation( "parry_attack" );
+            return true;
+        }
+
+        private EnemyStates GetEnemyInfront (
+            out Vector3 targetPosition,
+            out Vector3 targetDirection,
+            float maxDistanceToCheck = 1.0f,
+            float maxAngleToCheck = 60.0f
+        )
+        {
+            // Get the enemy state from a ray hit
+            EnemyStates target = null;
+
+            // Get the target withing the max distance in front of the user
+            Vector3 currentPosition;
+            currentPosition = transform.position;
+            currentPosition.y += 1;
+            Vector3 directionCurrentlyFacing = transform.forward;
+            RaycastHit hit;
+            if ( !Physics.Raycast( currentPosition, directionCurrentlyFacing, out hit, maxDistanceToCheck, ignoreLayers ) )
+            {
+                Debug.Log( "GetEnemyInfrontOfPlayer: Raycast Failed" );
+
+                targetPosition = Vector3.zero;
+                targetDirection = Vector3.zero;
+                return null;
+            }
+
+            target = hit.transform.GetComponentInParent<EnemyStates>();
+            currentPosition = transform.position;
+            targetPosition = target.transform.position;
+            targetDirection = targetPosition - currentPosition;
+            targetDirection.Normalize();
+            targetDirection.y = 0; // Make sure we aren't messing up the look rotation
+
+            // Make sure the target is in front of the player within acceptable angle
+            float angleOfParryTarget = Vector3.Angle( transform.forward, targetDirection );
+            bool parryTargetIsInFront = angleOfParryTarget < maxAngleToCheck;
+            if ( !parryTargetIsInFront )
+            {
+                Debug.Log( "GetEnemyInfrontOfPlayer: Angle Failed" );
+                return null;
+            }
+
+            return target;
+        }
+
+        private bool BehindTarget ( EnemyStates target, out float absAngle )
+        {
+            Vector3 directionToTarget = target.transform.position - transform.position;
+            float angle = Vector3.Angle( target.transform.forward, directionToTarget );
+            absAngle = Mathf.Abs( angle );
+
+            Debug.Log( "BehindTarget: Player is at angle: " + absAngle );
+
+            return absAngle < 90;
         }
 
         private void AttackAction ( Action action )
         {
-            if ( action == null )
-            {
-                return;
-            }
-
-            if ( CheckForParry() )
+            if ( action == null || CheckForBackStab( action ) || CheckForParry() )
             {
                 return;
             }
@@ -275,15 +379,6 @@ namespace Player.Application
 
         private void AttemptAction ( Action action )
         {
-            string targetAnim = action.targetAnim;
-
-            if ( string.IsNullOrEmpty( targetAnim ) )
-                return;
-
-            canBeParried = action.canBeParried;
-            canMove = false;
-            inAction = true;
-
             float targetSpeed = 1.0f;
             if ( action.changeSpeed )
             {
@@ -293,8 +388,27 @@ namespace Player.Application
                     targetSpeed = 1;
                 }
             }
+            RunActionAnimation( action.targetAnim, action.canBeParried, false, true, targetSpeed );
+        }
+
+        private void RunActionAnimation (
+            string targetAnimation,
+            bool cbp = true,
+            bool cm = false,
+            bool ia = true,
+            float targetSpeed = 1.0f
+        )
+        {
+            if ( string.IsNullOrEmpty( targetAnimation ) )
+            {
+                return;
+            }
+
+            canBeParried = cbp;
+            canMove = cm;
+            inAction = ia;
             anim.SetFloat( "animSpeed", targetSpeed );
-            anim.CrossFade( targetAnim, 0.2f );
+            anim.CrossFade( targetAnimation, 0.2f );
         }
 
         private void DetectRollAction ( )

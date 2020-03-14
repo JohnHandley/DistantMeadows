@@ -9,6 +9,34 @@ namespace Items.Application
         StateManager player;
         EnemyStates enemy;
 
+        public float maxTimer = 0.6f;
+        float timer;
+
+        void Update ( )
+        {
+            if ( player != null )
+            {
+                timer += player.delta;
+
+                if ( timer > maxTimer )
+                {
+                    timer = 0;
+                    gameObject.SetActive( false );
+                }
+            }
+
+            if ( enemy != null )
+            {
+                timer += enemy.delta;
+
+                if ( timer > maxTimer )
+                {
+                    timer = 0;
+                    gameObject.SetActive( false );
+                }
+            }
+        }
+
         public void InitPlayer ( StateManager st )
         {
             player = st;

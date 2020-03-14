@@ -79,7 +79,6 @@ namespace Enemies.Application
 
             if ( parriedBy != null && !parryIsOn )
             {
-                parriedBy.parryTarget = null;
                 parriedBy = null;
             }
 
@@ -180,14 +179,12 @@ namespace Enemies.Application
             anim.Play( "attack_interrupt" );
             anim.applyRootMotion = true;
             anim.SetBool( "canMove", false );
-            player.parryTarget = this;
             parriedBy = player;
             doParry = true;
         }
 
         public void IsGettingParried ( )
         {
-            Debug.Log( "Got Wrecked" );
             health = 0; // Die
 
             dontDoAnything = true;
