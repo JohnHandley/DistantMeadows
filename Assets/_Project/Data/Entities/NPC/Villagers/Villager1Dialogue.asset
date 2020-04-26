@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5e5665abedbb848bdb32b4cfac9ffd, type: 3}
+  m_Name: Villager1Dialogue
+  m_EditorClassIdentifier: 
+  conversationBlock:
+  - <pause=.1><gesture=think><emotion=happy><speed=25>Well I've been wanting to tell
+    you<speed=5>... <speed=25>That maybe <speed=5>...<pause=.1><speed=40><size=150%><emotion=suprised><effect=shake><effect=sparkle>
+    <b>WE SHOULD PLAY<speed=20>!</b>
+  - <emotion=angry><speed=50>Don't you dare say no<speed=5>... <speed=60><size=150%><b>FOR
+    REAL</b>!!!
+  - <effect=rain><emotion=sad><speed=30>Or I guess you could say no if you want<speed=5>...<speed=30>
+    I guess I really don't have a choice<speed=5>... <speed=15><effect=shake><effect=sparkle><emotion=suprised>UNLESS?
