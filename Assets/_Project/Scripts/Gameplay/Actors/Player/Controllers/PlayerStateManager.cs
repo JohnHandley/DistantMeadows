@@ -5,10 +5,8 @@ using DistantMeadows.Core.Models;
 using DistantMeadows.Actors.Core.Behaviors;
 using DistantMeadows.Actors.Player.Models;
 
-namespace DistantMeadows.Actors.Player.Controllers
-{
-    public class PlayerStateManager : CharacterStateManager
-    {
+namespace DistantMeadows.Actors.Player.Controllers {
+    public class PlayerStateManager : CharacterStateManager {
         [SerializeField]
         private PlayerInputManager _playerInput;
 
@@ -18,16 +16,14 @@ namespace DistantMeadows.Actors.Player.Controllers
 
         public StateMachine<string> playerStateMachine;
 
-        public override void Init()
-        {
+        public override void Init ( ) {
             base.Init();
 
-            if (_playerInput != null)
-            {
+            if ( _playerInput != null ) {
                 controls = _playerInput.Initialize();
             }
 
-            AddControllerToCamera.Initialize(this);
+            AddControllerToCamera.Initialize( this );
 
             State normal = new State(
                 "normal",
@@ -45,7 +41,7 @@ namespace DistantMeadows.Actors.Player.Controllers
                 }
             );
 
-            normal.onEnter = DisableRootMotion;
+            // normal.onEnter = DisableRootMotion;
 
             State attackState = new State(
                 "attack",
@@ -63,41 +59,36 @@ namespace DistantMeadows.Actors.Player.Controllers
 
             attackState.onEnter = EnableRootMotion;
 
-            playerStateMachine = new StateMachine<string>("PlayerState", normal, null);
+            playerStateMachine = new StateMachine<string>( "PlayerState", normal, null );
         }
 
-        private void FixedUpdate()
-        {
+        private void FixedUpdate ( ) {
             base.FixedTick();
-            if (playerStateMachine.GetCurrentState() == null)
+            if ( playerStateMachine.GetCurrentState() == null )
                 return;
             playerStateMachine.GetCurrentState().FixedTick();
         }
 
-        private void Update()
-        {
+        private void Update ( ) {
             base.Tick();
-            if (playerStateMachine.GetCurrentState() == null)
+            if ( playerStateMachine.GetCurrentState() == null )
                 return;
             playerStateMachine.GetCurrentState().Tick();
         }
 
-        private void LateUpdate()
-        {
+        private void LateUpdate ( ) {
             base.LateTick();
-            if (playerStateMachine.GetCurrentState() == null)
+            if ( playerStateMachine.GetCurrentState() == null )
                 return;
             playerStateMachine.GetCurrentState().LateTick();
         }
 
         #region State Events
-        void DisableRootMotion()
-        {
+        void DisableRootMotion ( ) {
             actorStates.useRootMotion = false;
         }
 
-        void EnableRootMotion()
-        {
+        void EnableRootMotion ( ) {
             actorStates.useRootMotion = true;
         }
 

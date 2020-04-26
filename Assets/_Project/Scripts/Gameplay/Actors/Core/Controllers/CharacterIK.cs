@@ -129,7 +129,6 @@ public class CharacterIK : MonoBehaviour {
     /// Moves the height of the pelvis.
     /// </summary>
     private void MovePelvisHeight ( ) {
-
         if ( rightFoot_pos == Vector3.zero || leftFoot_pos == Vector3.zero || lastPelvisPositionY == 0 ) {
             lastPelvisPositionY = anim.bodyPosition.y;
             return;

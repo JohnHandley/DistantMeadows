@@ -38,6 +38,9 @@ public class CharacterDialogueHandler {
     }
 
     public void Update ( ) {
+        if ( dialogue == null )
+            return;
+
         string partner = dialogueTrigger.GetDialogueTarget();
         if ( !String.IsNullOrEmpty( partner ) ) {
             potentialDialoguePartner = partner;
